@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Search, SlidersHorizontal, TrendingUp, Sparkles, ExternalLink } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
-export default function ToolsPage() {
+function ToolsContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
 
@@ -431,5 +431,20 @@ export default function ToolsPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+export default function ToolsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--background)' }}>
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]" style={{ color: 'var(--accent-primary)' }}></div>
+          <p className="mt-4" style={{ color: 'var(--text-secondary)' }}>Loading tools...</p>
+        </div>
+      </div>
+    }>
+      <ToolsContent />
+    </Suspense>
   );
 }
