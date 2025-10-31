@@ -60,7 +60,9 @@ export default function ToolDetailPage() {
     if (!tool) return '';
     if (tool.pricing_type === 'free') return 'Free';
     if (tool.pricing_type === 'open_source') return 'Open Source';
-    if (tool.price_from !== undefined && tool.price_to !== undefined) {
+    // Only show price range if both values exist and are not null
+    if (tool.price_from !== undefined && tool.price_from !== null &&
+        tool.price_to !== undefined && tool.price_to !== null) {
       return `$${tool.price_from} - $${tool.price_to}/mo`;
     }
     return tool.pricing_info || 'See pricing';
@@ -311,7 +313,8 @@ export default function ToolDetailPage() {
               <p className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
                 {getPricingDisplay()}
               </p>
-              {tool.pricing_info && (
+              {/* Only show pricing_info as additional details if price range is displayed */}
+              {tool.pricing_info && tool.price_from !== null && tool.price_to !== null && (
                 <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                   {tool.pricing_info}
                 </p>

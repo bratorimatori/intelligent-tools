@@ -124,7 +124,7 @@ export default async function Home() {
           background: 'linear-gradient(135deg, var(--surface-secondary) 0%, var(--surface-tertiary) 100%)'
         }}>
           <img
-            src="https://iatkdgqfrmiixrehawqv.supabase.co/storage/v1/object/public/website_images/hero-background-wide.jpg"
+            src="https://wmpyxajsoiwnvxkmfqty.supabase.co/storage/v1/object/public/website_images/hero-background-wide.jpg"
             alt="AI Tools Hero"
             className="w-full h-full object-cover"
             style={{ opacity: 0.8 }}

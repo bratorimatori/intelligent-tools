@@ -2,15 +2,19 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Search, SlidersHorizontal, TrendingUp, Sparkles, ExternalLink } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 export default function ToolsPage() {
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get('category');
+
   const [tools, setTools] = useState<any[]>([]);
   const [toolCategories, setToolCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam || 'all');
   const [selectedPricing, setSelectedPricing] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('popular');
   const [showFilters, setShowFilters] = useState(false);
@@ -60,7 +64,13 @@ export default function ToolsPage() {
 
     // Category filter
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter((tool) => tool.category?.slug === selectedCategory);
+      // Check if selectedCategory is a UUID (category_id) or a slug
+      const isUUID = selectedCategory.length > 20 && selectedCategory.includes('-');
+      filtered = filtered.filter((tool) =>
+        isUUID
+          ? tool.category_id === selectedCategory
+          : tool.category?.slug === selectedCategory
+      );
     }
 
     // Pricing filter

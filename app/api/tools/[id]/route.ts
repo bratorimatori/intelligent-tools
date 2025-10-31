@@ -4,9 +4,10 @@ import { createClient } from '@/lib/supabase/server';
 // GET - Fetch a single tool by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
 
     const { data, error } = await supabase
@@ -21,7 +22,7 @@ export async function GET(
           icon
         )
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (error) {
@@ -44,9 +45,10 @@ export async function GET(
 // PATCH - Update a tool
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const supabase = await createClient();
 
@@ -54,7 +56,7 @@ export async function PATCH(
     const { data: existingTool } = await supabase
       .from('tools')
       .select('id')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (!existingTool) {
@@ -67,7 +69,7 @@ export async function PATCH(
         .from('tools')
         .select('id')
         .eq('slug', body.slug)
-        .neq('id', params.id)
+        .neq('id', id)
         .single();
 
       if (slugExists) {
@@ -96,7 +98,7 @@ export async function PATCH(
     const { data, error } = await supabase
       .from('tools')
       .update(updateData)
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single();
 
@@ -117,17 +119,18 @@ export async function PATCH(
 
 // DELETE - Delete a tool
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
 
     // Check if tool exists
     const { data: existingTool } = await supabase
       .from('tools')
       .select('id')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (!existingTool) {
@@ -138,7 +141,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('tools')
       .delete()
-      .eq('id', params.id);
+      .eq('id', id);
 
     if (error) {
       console.error('Error deleting tool:', error);
